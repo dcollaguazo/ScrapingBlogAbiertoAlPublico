@@ -1,5 +1,5 @@
 # ScrapingBlogAbiertoAlPublico
-Tutorial corto que utiliza la Scrapy para obtener el contenido del blog Abierto al Público.
+Probando Scrapy para obtener el contenido del blog Abierto al Público.
 
 # Lenguaje de programación
 Python 3.6.5
