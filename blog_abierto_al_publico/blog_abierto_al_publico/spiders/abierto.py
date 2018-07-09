@@ -50,11 +50,11 @@ class QuotesSpider(scrapy.Spider):
         blog_content = response.xpath('normalize-space(//div[@class = "pf-content"])').extract()
         
         yield{
-                #'author': author,
-                #'publication_date': publication_date,
-                #'title': title,
-                #'summary': summary,
-                #'blog_url': blog_url,
+                'author': author,
+                'publication_date': publication_date,
+                'title': title,
+                'summary': summary,
+                'blog_url': blog_url,
                 'blog_content': blog_content,
 
             }
