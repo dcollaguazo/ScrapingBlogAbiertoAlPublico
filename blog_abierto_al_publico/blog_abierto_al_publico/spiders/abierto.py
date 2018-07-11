@@ -14,7 +14,6 @@ class QuotesSpider(scrapy.Spider):
     ]
 
     def parse(self, response):
-        global counter
         articles = response.xpath('//div[@class="blog-item-inner"]')
 
         for article in articles:
@@ -48,6 +47,7 @@ class QuotesSpider(scrapy.Spider):
         summary = response.meta['summary']
         blog_url = response.meta['blog_url']
         blog_content = response.xpath('normalize-space(//div[@class = "pf-content"])').extract()
+
         
         yield{
                 'author': author,
