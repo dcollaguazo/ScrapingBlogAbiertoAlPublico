@@ -41,7 +41,7 @@ class QuotesSpider(scrapy.Spider):
         
 
     def parse_blog(self, response):
-        author = response.meta['author']
+        author = str(response.meta['author'], encoding="utf-8")
         publication_date = response.meta['publication_date']
         title = response.meta['title']
         summary = response.meta['summary']
