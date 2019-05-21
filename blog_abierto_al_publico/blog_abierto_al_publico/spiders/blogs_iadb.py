@@ -1,6 +1,11 @@
 import scrapy
-# import logging
 from scrapy import Request
+from datetime import datetime
+from dateutil import parser
+from blog_abierto_al_publico.LanguageDetector import LanguageDetector
+# import pdb
+# import mymodule
+# import locale
 
 class QuotesSpider(scrapy.Spider):
     name = "blogs_iadb"
@@ -46,12 +51,14 @@ class QuotesSpider(scrapy.Spider):
     ]
 
     def parse(self, response):
-        # self.logger.info('Parse function called on %s', response.url)
         articles = response.xpath('//article')
 
         for article in articles:
             author = article.xpath('header[@class="entry-header"]/p[@class="entry-meta"]/a/text()').extract_first(default='')
-            publication_date = article.xpath('header[@class="entry-header"]/p[@class="entry-meta"]/time[@class="entry-time"]/text()').extract_first(default='')
+            publication_date = article.xpath('header[@class="entry-header"]/p[@class="entry-meta"]/time[@class="entry-time"]/@datetime').extract_first(default='')
+            publication_date = parser.parse(publication_date[0:-6])
+            publication_date = publication_date.strftime("%Y-%m-%dT%H:%M:%S%z") + publication_date.strftime('.%f')[:4] + 'Z'
+            # pdb.set_trace()
             title = article.xpath('header[@class="entry-header"]/h2[@class="entry-title"]/a/text()').extract_first(default='')
             blog_url = article.xpath('header[@class="entry-header"]/h2/a/@href').extract_first(default='')
             summary = article.xpath('div[@class="entry-content"]/p/text()').extract_first(default='')
@@ -65,11 +72,9 @@ class QuotesSpider(scrapy.Spider):
             
             yield request
 
-        # follow pagination link
         current_url = article.xpath('//link[@rel="canonical"]/@href').extract_first()
-        # last page of the blog
+        # next page of the blog
         next_url = article.xpath('//div[@class="archive-pagination pagination"]/ul/li[@class="pagination-next"]/a/@href').extract_first()
-        # last_page = article.xpath('//div[@class="archive-pagination pagination"]/ul/li[last()-1]/a/@href').extract_first()
         if next_url:
             yield scrapy.Request(url=next_url, callback=self.parse)
             
@@ -81,17 +86,28 @@ class QuotesSpider(scrapy.Spider):
         summary = response.meta['summary']
         blog_url = response.meta['blog_url']
         blog_content = response.xpath('normalize-space(//div[@class = "entry-content"])').extract()
+        lang = ''
+
+        lang_det = LanguageDetector()    
+        lang = lang_det.detect(str(blog_content))
+        
+
         blog_headlines = response.xpath('//div[@class = "entry-content"]/h1/text()').extract()
         categories = response.xpath('//footer[@class = "entry-footer"]/p[@class="entry-meta"]/span[@class="entry-categories"]/a/text()').extract()
         tags = response.xpath('//footer[@class = "entry-footer"]/p[@class="entry-meta"]/span[@class="entry-tags"]/a/text()').extract()
         yield{
+               'type': 'blog-post',
+               'source': blog_url,
+               'sensitivity': 'public',
+               'employeeID': '',
+               'sourceDate': publication_date,
+               'generatedDate':'',
+               'tags': tags,
                'author': author,
-               'publication_date': publication_date,
                'title': title,
                'summary': summary,
-               'blog_url': blog_url,
                'blog_content': blog_content,
                'headlines': blog_headlines,
                'categories': categories,
-               'tags': tags,
+               'lang': lang,
                }
