@@ -1,15 +1,15 @@
 # ScrapingBlogAbiertoAlPublico
-Probando Scrapy para obtener el contenido del blog Abierto al Público.
+Testing the python library Scrapy to get the contents of the IDB blogs.
 
-# Lenguaje de programación
+# Programming Language
 Python 3.6.5
 
-# Instalación
-Las dependencias de esta clase se encuentran en el archivo requirements.txt
+# Installation
+All dependencies are in requirements.txt
 
-# ¿Cómo utilizarlo?
-Utilizando la línea de comandos, navegar a la carpeta *blog_abierto_al_publico* y ejecutar el siguiente comando:
-- scrapy crawl abierto -o output.json
+# How to use it?
+Navigate to the folder blog_abierto_al_publico* and in the command prompt write:
+- scrapy crawl NAME OF SPIDER -o output.json
 
-# Licencia
+# Licence
 MIT License
